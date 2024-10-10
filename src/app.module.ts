@@ -11,23 +11,16 @@ import SeriesModule from './series/series.module';
   imports: [
     ConfigModule.forRoot({
       validationSchema: Joi.object({
-        MONGO_USERNAME: Joi.string().required(),
-        MONGO_PASSWORD: Joi.string().required(),
-        MONGO_DATABASE: Joi.string().required(),
-        MONGO_HOST: Joi.string().required(),
+        MONGO_URI: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const username = configService.get('MONGO_USERNAME');
-        const password = configService.get('MONGO_PASSWORD');
-        const database = configService.get('MONGO_DATABASE');
-        const host = configService.get('MONGO_HOST');
+        const uri = configService.get('MONGO_URI');
 
         return {
-          uri: `mongodb://${username}:${password}@${host}`,
-          dbName: database,
+          uri,
         };
       },
       inject: [ConfigService],
